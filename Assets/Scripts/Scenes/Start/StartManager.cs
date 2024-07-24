@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Fusion;
 using Network;
 using Constant;
+using Utils;
 
 namespace Scenes.Start
 {
@@ -16,6 +17,17 @@ namespace Scenes.Start
         [SerializeField] private Button _clientButton;
         [Header("Prefabs")]
         [SerializeField] private NetworkRunner _runnerPrefab;
+
+        private void Awake()
+        {
+            //ユーザー情報
+            if (UserInfo.Instance == null)
+            {
+                UserInfo.Instance = new UserInfo(
+                    UnityEngine.Random.Range(0, 100),
+                    "hogehoge");
+            }
+        }
 
         /// <summary>
         /// ホスト参加
@@ -30,19 +42,19 @@ namespace Scenes.Start
             runner.ProvideInput = true;
             DontDestroyOnLoad(runner);
 
-            //Runner引数
+            //StartGame引数
             var args = new StartGameArgs()
             {
                 GameMode = GameMode.Host, //セッション権限
                 Scene = SceneRef.FromIndex((int)SceneName.InGame), //ロードするゲームシーン
-                SceneManager = this.gameObject.GetComponent<NetworkSceneManagerDefault>(), //シーンマネージャー
+                SceneManager = runner.GetComponent<NetworkSceneManagerDefault>(), //シーンマネージャー
                 SessionName = "test", //セッション名
-                PlayerCount = 2, //最大人数
+                PlayerCount = 4, //最大人数
                 ConnectionToken = Guid.NewGuid().ToByteArray(),
             };
 
             //セッション参加
-            var result = await NetworkManager.Instance.JoinSession(runner, SessionRole.Host, args);
+            var result = await NetworkManager.Instance.JoinSession(runner, false, args);
 
             //ボタンロック解除
             if (!result) ButtonReleaseAll();
@@ -65,14 +77,13 @@ namespace Scenes.Start
             var args = new StartGameArgs()
             {
                 GameMode = GameMode.Client, //セッション権限
-                //Scene = SceneRef.FromIndex((int)SceneName.InGame), //ロードするゲームシーン
-                SceneManager = this.gameObject.GetComponent<NetworkSceneManagerDefault>(), //シーンマネージャー
+                SceneManager = runner.GetComponent<NetworkSceneManagerDefault>(), //シーンマネージャー
                 SessionName = "test", //セッション名
                 ConnectionToken = Guid.NewGuid().ToByteArray(),
             };
 
             //セッション参加
-            var result = await NetworkManager.Instance.JoinSession(runner, SessionRole.Client, args);
+            var result = await NetworkManager.Instance.JoinSession(runner, false, args);
 
             //ボタンロック解除
             if (!result) ButtonReleaseAll();

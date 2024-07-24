@@ -4,5 +4,6 @@ namespace Constant
     {
         Start,
         InGame,
+        InLobby,
     }
 }
