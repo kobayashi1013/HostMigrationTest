@@ -485,7 +485,6 @@ MonoBehaviour:
   _hostButton: {fileID: 1363573565}
   _clientButton: {fileID: 549965017}
   _runnerPrefab: {fileID: 730318205034440402, guid: a98c715b1f8ab8a469f05b1e4fee5d2a, type: 3}
-  _roomServerPrefab: {fileID: 8096780542439004438, guid: 7b7f17f630a3ff74f9f9fa0bc75b78a9, type: 3}
 --- !u!4 &1269654747
 Transform:
   m_ObjectHideFlags: 0

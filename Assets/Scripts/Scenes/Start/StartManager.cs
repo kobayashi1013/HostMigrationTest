@@ -16,7 +16,6 @@ namespace Scenes.Start
         [SerializeField] private Button _clientButton;
         [Header("Prefabs")]
         [SerializeField] private NetworkRunner _runnerPrefab;
-        [SerializeField] private RoomServer _roomServerPrefab;
 
         public async void OnHostButton()
         {
@@ -31,14 +30,12 @@ namespace Scenes.Start
                 GameMode = GameMode.Host,
                 Scene = SceneRef.FromIndex((int)SceneName.InLobby),
                 SceneManager = runner.GetComponent<NetworkSceneManagerDefault>(),
-                //SessionName = "test",
+                SessionName = "test",
                 PlayerCount = 4,
                 ConnectionToken = Guid.NewGuid().ToByteArray(),
             };
 
             var result = await NetworkManager.Instance.JoinSession(runner, args);
-
-            var roomServer = runner.Spawn(_roomServerPrefab);
 
             if (!result) ButtonReleaseAll();
         }
@@ -55,7 +52,7 @@ namespace Scenes.Start
             {
                 GameMode = GameMode.Client,
                 SceneManager = runner.GetComponent<NetworkSceneManagerDefault>(),
-                //SessionName = "test",
+                SessionName = "test",
                 ConnectionToken = Guid.NewGuid().ToByteArray(),
             };
 
