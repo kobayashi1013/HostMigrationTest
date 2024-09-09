@@ -13,7 +13,20 @@ public class InLobbyManager : NetworkBehaviour
     {
         if (!Runner.IsServer) return;
 
-        RunnerManager.Instance.OnPlayerSpawnedCall.Subscribe(player =>
+        if (!Runner.IsResume)
+        {
+            foreach (var player in RunnerManager.Instance.PlayerList.Keys)
+            {
+                var playerObj = RunnerManager.Instance.PlayerSpawned(
+                    _playerPrefab,
+                    new Vector3(0, Random.Range(0, 100), 0),
+                    Quaternion.identity,
+                    player);
+                RunnerManager.Instance.PlayerList.Add(player, playerObj);
+            }
+        }
+
+        RunnerManager.Instance.NewPlayerJoinedCall.Subscribe(player =>
         {
             var playerObj = RunnerManager.Instance.PlayerSpawned(
                 _playerPrefab,

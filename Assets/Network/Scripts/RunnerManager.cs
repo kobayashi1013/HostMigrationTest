@@ -20,10 +20,10 @@ namespace Network
 
         public static NetworkRunner Runner;
         public static RunnerManager Instance;
-        public IObservable<PlayerRef> OnPlayerSpawnedCall { get { return _playerSpawnedSubject; } }
+        public IObservable<PlayerRef> NewPlayerJoinedCall { get { return _newPlayerJoinedSubject; } }
         public Dictionary<PlayerRef, NetworkObject> PlayerList;
 
-        private Subject<PlayerRef> _playerSpawnedSubject = new Subject<PlayerRef>();
+        private Subject<PlayerRef> _newPlayerJoinedSubject = new Subject<PlayerRef>();
 
         private void Awake()
         {
@@ -73,11 +73,11 @@ namespace Network
 
             if (_hostMigration)
             {
-                _playerSpawnedSubject.OnNext(player);
+                _newPlayerJoinedSubject.OnNext(player);
             }
             else
             {
-                _playerSpawnedSubject.OnNext(player);
+                _newPlayerJoinedSubject.OnNext(player);
             }
         }
 
