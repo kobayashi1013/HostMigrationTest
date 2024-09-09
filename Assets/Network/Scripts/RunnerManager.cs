@@ -13,17 +13,17 @@ namespace Network
     [Serializable]
     public sealed class SceneManagerTable : SerializableDictionary<int, GameObject> { }
 
-    public class RunnerManager : MonoBehaviour
+    public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         [SerializeField] private bool _hostMigration = false;
         [SerializeField] private SceneManagerTable _sceneManagerTable;
 
         public static NetworkRunner Runner;
         public static RunnerManager Instance;
-        public IObservable<Unit> OnPlayerJoinedCall { get { return _playerJoinedCallSubject; } }
+        public IObservable<PlayerRef> OnPlayerSpawnedCall { get { return _playerSpawnedSubject; } }
+        public Dictionary<PlayerRef, NetworkObject> PlayerList;
 
-        public Subject<Unit> _playerJoinedCallSubject = new Subject<Unit>();
-        private Dictionary<PlayerRef, NetworkObject> _playerList;
+        private Subject<PlayerRef> _playerSpawnedSubject = new Subject<PlayerRef>();
 
         private void Awake()
         {
@@ -43,7 +43,7 @@ namespace Network
                 if (Runner.IsServer)
                 {
                     Debug.Log("Session Role : Host");
-                    _playerList = new Dictionary<PlayerRef, NetworkObject>();
+                    PlayerList = new Dictionary<PlayerRef, NetworkObject>();
                 }
                 else
                 {
@@ -73,15 +73,25 @@ namespace Network
 
             if (_hostMigration)
             {
-                _playerJoinedCallSubject.OnNext(Unit.Default);
+                _playerSpawnedSubject.OnNext(player);
             }
             else
             {
-                _playerJoinedCallSubject.OnNext(Unit.Default);
+                _playerSpawnedSubject.OnNext(player);
             }
         }
 
-        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
+        public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
+        {
+            if (!runner.IsServer) return;
+
+            if (PlayerList.TryGetValue(player, out NetworkObject playerObj))
+            {
+                runner.Despawn(playerObj);
+                PlayerList.Remove(player);
+            }
+        }
+
         public void OnInput(NetworkRunner runner, NetworkInput input) { }
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
@@ -96,7 +106,6 @@ namespace Network
 
         public void OnSceneLoadDone(NetworkRunner runner)
         {
-            Debug.Log("true");
             if (!runner.IsServer || runner.IsResume) return;
 
             if (_sceneManagerTable.TryGetValue(SceneManager.GetActiveScene().buildIndex, out var sceneManagerPrefab))

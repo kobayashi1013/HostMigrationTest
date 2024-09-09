@@ -9,11 +9,18 @@ public class InLobbyManager : NetworkBehaviour
 {
     [SerializeField] private GameObject _playerPrefab;
 
-    /*public override void Spawned()
+    public override void Spawned()
     {
-        RunnerManager.Instance.OnPlayerJoinedCall.Subscribe(_ =>
+        if (!Runner.IsServer) return;
+
+        RunnerManager.Instance.OnPlayerSpawnedCall.Subscribe(player =>
         {
-            Debug.Log("player spawn");
-        });
-    }*/
+            var playerObj = RunnerManager.Instance.PlayerSpawned(
+                _playerPrefab,
+                new Vector3(0, Random.Range(0, 100), 0),
+                Quaternion.identity,
+                player);
+            RunnerManager.Instance.PlayerList.Add(player, playerObj);
+        }).AddTo(this);
+    }
 }
