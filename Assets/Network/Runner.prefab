@@ -72,8 +72,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d0a263261078f84aa485707299a4c76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hostMigration: 0
-  _sceneManagerTable:
-    _items:
-    - Key: 1
-      Value: {fileID: 8055098361863681660, guid: ca3f60359e99f504e88ca032f390d1d5, type: 3}
+  _configAsset: {fileID: 11400000, guid: b1ca47fcdeea27546af97561f9af1f5c, type: 2}

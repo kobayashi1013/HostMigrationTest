@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5466147230492387311}
   - component: {fileID: 6012618411099659762}
+  - component: {fileID: -6906802274303947149}
   - component: {fileID: 2965929390143620208}
   m_Layer: 0
   m_Name: InLobbyManager
@@ -50,7 +51,23 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
+  - {fileID: -6906802274303947149}
   - {fileID: 2965929390143620208}
+--- !u!114 &-6906802274303947149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8055098361863681660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b67677580929ff247b7ecea0b1156b44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _token: 
+  _position: {x: 0, y: 0, z: 0}
+  _rotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &2965929390143620208
 MonoBehaviour:
   m_ObjectHideFlags: 0
