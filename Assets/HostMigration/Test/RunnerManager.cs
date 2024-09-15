@@ -8,7 +8,6 @@ using Fusion.Sockets;
 public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private GameObject _playerPrefab;
-    private Dictionary<PlayerRef, NetworkObject> _playerDict = new Dictionary<PlayerRef, NetworkObject>();
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
@@ -16,18 +15,13 @@ public class RunnerManager : MonoBehaviour, INetworkRunnerCallbacks
 
         var position = new Vector3(0, UnityEngine.Random.Range(0, 100), 0);
         var playerObj = runner.Spawn(_playerPrefab, position, Quaternion.identity, player);
-        _playerDict.Add(player, playerObj);
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         if (!runner.IsServer) return;
 
-        if (_playerDict.TryGetValue(player, out NetworkObject playerObj))
-        {
-            runner.Despawn(playerObj);
-            _playerDict.Remove(player);
-        }
+        if (runner.TryGetPlayerObject(player, out var playerObj)) runner.Despawn(playerObj);
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input) { }

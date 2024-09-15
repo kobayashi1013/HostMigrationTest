@@ -11,7 +11,6 @@ public class StartManager : MonoBehaviour
     {
         var runner = Instantiate(_runnerPrefab);
         runner.ProvideInput = true;
-        DontDestroyOnLoad(runner);
 
         var args = new StartGameArgs()
         {
